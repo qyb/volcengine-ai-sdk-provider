@@ -135,7 +135,7 @@ export class VolcengineChatLanguageModel implements LanguageModelV3 {
           type: 'tool-call',
           toolCallId: tc.id,
           toolName: tc.function.name,
-          input: JSON.parse(tc.function.arguments),
+          input: tc.function.arguments,  // Keep as string, AI SDK will parse it
         });
       }
     }

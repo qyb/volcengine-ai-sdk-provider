@@ -38,7 +38,7 @@ export class VolcengineImageModel implements ImageModelV3 {
   }
 
   async doGenerate(options: ImageModelV3CallOptions): Promise<{
-    images: string[];
+    images: string[] | Uint8Array[];
     warnings: SharedV3Warning[];
     providerMetadata?: ImageModelV3ProviderMetadata;
     response: {
@@ -100,27 +100,35 @@ export class VolcengineImageModel implements ImageModelV3 {
 
     const imageResponse = (await response.json()) as VolcengineImageResponse;
 
-    const images = imageResponse.data.map((item) => {
+    // Process images
+    const images: string[] | Uint8Array[] = [];
+    for (const item of imageResponse.data) {
       if (item.b64_json) {
-        return item.b64_json;
+        (images as string[]).push(item.b64_json);
+      } else if (item.url) {
+        // Fetch the image from URL and return as Uint8Array
+        const imageRes = await fetchImpl(item.url);
+        if (!imageRes.ok) {
+          throw new Error(`Failed to fetch image from URL: ${imageRes.status}`);
+        }
+        const arrayBuffer = await imageRes.arrayBuffer();
+        (images as Uint8Array[]).push(new Uint8Array(arrayBuffer));
+      } else {
+        throw new Error('No image data in response');
       }
-      if (item.url) {
-        return item.url;
-      }
-      throw new Error('No image data in response');
-    });
+    }
 
     // Build provider metadata with required 'images' array for each provider entry
-    const revisedPrompts = imageResponse.data
-      .map((item) => item.revised_prompt)
-      .filter((p): p is string => p !== undefined);
+    const urls = imageResponse.data
+      .map((item) => item.url)
+      .filter((url): url is string => url !== undefined);
 
     return {
       images,
       warnings: [],
       providerMetadata: {
         volcengine: {
-          images: revisedPrompts,
+          images: urls,  // 原始图片 URL 列表
         },
       },
       response: {
