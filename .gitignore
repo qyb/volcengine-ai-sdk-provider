@@ -3,3 +3,4 @@ dist
 node_modules
 
 *-volcengine-ai-sdk-provider-*.tgz
+.npmrc

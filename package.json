@@ -2,10 +2,11 @@
   "name": "@qyb/volcengine-ai-sdk-provider",
   "version": "0.1.0",
   "description": "Volcengine provider for AI SDK",
+  "repository": "github:qyb/volcengine-ai-sdk-provider",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
-    "dist"
+    "dist", "README.md"
   ],
   "scripts": {
     "build": "tsc",

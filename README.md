@@ -37,7 +37,7 @@ import { createVolcengine } from '@qyb/volcengine-ai-sdk-provider';
 const volcengine = createVolcengine();
 
 const { textStream } = await streamText({
-  model: volcengine.chat('your-model-endpoint-id'),
+  model: volcengine.chat('doubao-seed-1-6-flash-250828'),
   prompt: '写一首关于春天的诗。',
 });
 
