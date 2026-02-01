@@ -9,6 +9,7 @@
     "dist", "README.md"
   ],
   "scripts": {
+    "prepublishOnly": "npm run build",
     "build": "tsc",
     "dev": "tsc --watch",
     "clean": "rm -rf dist"
